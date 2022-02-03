@@ -1,0 +1,6 @@
+npx create-react-app typescript-styledcomponents-shoppingcart --template typescript
+yarn add @material-ui/core @material-ui/icons
+-> react-query is used instead of redux
+yarn add react-query
+-> @types/styled-components is for typescript
+yarn add styled-components @types/styled-components
