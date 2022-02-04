@@ -41,12 +41,48 @@ const App = () => {
   const { data, isLoading, error } = useQuery<CartItemType[]>('products', getProducts)
   // console.log(data);
 
-  const getTotalItems = (items: CartItemType[]) => 
-    items.reduce((ack: number, item: CartItemType) => ack + item.price, 0);
+  const getTotalItems = (items: CartItemType[]) =>
+    items.reduce((ack: number, item: CartItemType) => ack + item.amount, 0);
 
-  const handleAddToCart = (clickedItem: CartItemType) => null;
+  const handleAddToCart = (clickedItem: CartItemType) => {
+    setCartItems(prev => {
+      const isItemInCart = prev.find(item => item.id === clickedItem.id);
 
-  const handleRemoveFromCart = (id: number) => null;
+      if (isItemInCart) {
+        return prev.map(item => item.id === clickedItem.id ? { ...item, amount: item.amount + 1 } : item)
+      }
+
+      return [...prev, { ...clickedItem, amount: 1 }];
+    });
+
+    // setCartItems(prev => {
+    //   // 1. Is the item already added in the cart?
+    //   const isItemInCart = prev.find(item => item.id === clickedItem.id);
+
+    //   if (isItemInCart) {
+    //     return prev.map(item =>
+    //       item.id === clickedItem.id
+    //         ? { ...item, amount: item.amount + 1 }
+    //         : item
+    //     );
+    //   }
+    //   // First time the item is added
+    //   return [...prev, { ...clickedItem, amount: 1 }];
+    // });
+  };
+
+  const handleRemoveFromCart = (id: number) => {
+    setCartItems(prev => {
+      return prev.reduce((ack, item) => {
+        if (item.id === id) {
+          if (item.amount === 1) return ack;
+          return [...ack, { ...item, amount: item.amount - 1 }];
+        } else {
+          return [...ack, item];
+        }
+      }, [] as CartItemType[])
+    });
+  };
 
   if (isLoading) return <LinearProgress />
 
